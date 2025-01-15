@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<html lang="eng">
+<head>
+    <meta charset="UTF-8">
+    <title>RTCO</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/app.css">
+</head>
+<body>
+    Join Room: {{.RoomId}}
+    <h3 id="label-username">USERNAME</h3>
+    <div>
+        <form action="/join-chat" method="POST">
+        <div>
+            <input type="text" id ="username" name="uname">
+            <input type="hidden" id="roomid" name="rid" value={{.RoomId}} readonly>
+        </div>
+        <div>
+            <button id ="btn-join" type="submit">Join Meeting</button>
+        </form>
+    </div>
+
+    <script type="text/javascript" src="/static/js/app.js"></script>
+</body>
+
+</html>

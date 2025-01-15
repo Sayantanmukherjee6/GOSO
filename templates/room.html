@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>RTCO</title>
+    <script>
+        function copyLink() {
+            // The link to copy
+            const link = document.getElementById("roomlink").value;
+
+            // Copy the link to the clipboard
+            navigator.clipboard.writeText(link).then(() => {
+                alert("Link copied to clipboard: " + link);
+            }).catch((err) => {
+                alert("Failed to copy link: " + err);
+            });
+        }
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #messages {
+            border: 1px solid #ddd;
+            padding: 10px;
+            height: 300px;
+            overflow-y: scroll;
+            margin-bottom: 10px;
+        }
+        #input {
+            width: calc(100% - 80px);
+        }
+    </style>
+</head>
+<body>
+    Please share the link for others to join:
+    <input type="text" id="roomlink" value={{.Roomlink}} readonly>
+
+    <button onclick="copyLink()">Copy Link</button>
+
+    <h1>Room Details</h1>
+    <p><strong>Room:</strong> {{.RoomId}}</p>
+    <p><strong>Username:</strong> {{.Username}}</p>
+
+    <h1>WebSocket Chat</h1>
+    <p id="usernameDisplay"></p>
+    <div id="messages"></div>
+    <input type="text" id="input" placeholder="Type a message">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        // Get the username from the query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get('uname');
+        const roomID = "{{.RoomId}}";
+
+
+        if (!username) {
+            console.log("Username is required to join the chat!");
+            window.location.href = "/";
+        } else {
+            document.getElementById("usernameDisplay").textContent = `Logged in as: ${username}`;
+        }
+
+        //const ws = new WebSocket("ws://localhost:8000/ws");
+        const ws = new WebSocket(`ws://localhost:8000/ws?roomID=${encodeURIComponent(roomID)}`);
+
+
+        const messagesDiv = document.getElementById("messages");
+        const inputField = document.getElementById("input");
+
+        ws.onmessage = (event) => {
+            const message = document.createElement("div");
+            message.textContent = event.data;
+            messagesDiv.appendChild(message);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight; // Auto-scroll
+        };
+
+        ws.onopen = () => {
+            console.log("Connected to WebSocket server.");
+        };
+
+        ws.onclose = () => {
+            console.log("Disconnected from WebSocket server.");
+        };
+
+        function sendMessage() {
+            const message = inputField.value;
+            if (message) {
+                ws.send(`${username}: ${message}`);
+                inputField.value = "";
+            }
+        }
+    </script>
+</body>
+</html>
