@@ -27,4 +27,4 @@ RUN go build -o schat .
 EXPOSE 8000
 
 # Command to run the application
-CMD ["./schat"]
+CMD ["./goso"]
