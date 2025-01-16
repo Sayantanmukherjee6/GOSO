@@ -40,13 +40,6 @@ func NewHub() *Hub {
 	}
 }
 
-// hub.rooms: {
-// 	roomid: {
-// 		clienta: bool
-// 	}
-
-// }
-
 // Start runs the Hub to manage WebSocket events
 func (h *Hub) Start() {
 	for {

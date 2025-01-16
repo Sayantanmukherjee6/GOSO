@@ -61,9 +61,15 @@
         } else {
             document.getElementById("usernameDisplay").textContent = `Logged in as: ${username}`;
         }
+        
+        var loc= window.location;
+        var wsStart = 'ws://';
 
-        const ws = new WebSocket(`ws://localhost:8000/ws?roomID=${encodeURIComponent(roomID)}`);
-
+        if(loc.protocol == 'https:'){
+            wsStart= 'wss://';
+        }
+        var endpoint= wsStart + loc.host + '/ws?roomID=${encodeURIComponent(roomID)}';
+        const ws = new WebSocket(endpoint)
 
         const messagesDiv = document.getElementById("messages");
         const inputField = document.getElementById("input");
