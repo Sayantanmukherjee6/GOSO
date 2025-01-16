@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>RTCO</title>
+    <title>SCHAT</title>
     <script>
         function copyLink() {
             // The link to copy
@@ -62,7 +62,6 @@
             document.getElementById("usernameDisplay").textContent = `Logged in as: ${username}`;
         }
 
-        //const ws = new WebSocket("ws://localhost:8000/ws");
         const ws = new WebSocket(`ws://localhost:8000/ws?roomID=${encodeURIComponent(roomID)}`);
 
 
