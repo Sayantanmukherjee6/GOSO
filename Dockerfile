@@ -1,30 +1,33 @@
-# Use the official Go image as a base image
-FROM golang:1.20-alpine
+# Stage 1: Build the application
+FROM golang:1.23.2 AS builder
 
-# Set environment variables for Go
-ENV GO111MODULE=on \
-    CGO_ENABLED=0 \
-    GOOS=linux \
-    GOARCH=amd64
-
-# Create and set the working directory in the container
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy Go modules manifest files
+# Copy the Go modules manifests and download dependencies
 COPY go.mod go.sum ./
-
-# Download Go module dependencies
 RUN go mod download
 
-# Copy the source code to the container
-COPY *.go ./
-COPY templates/ ./templates/
+# Copy the entire source code to the container
+COPY . .
 
 # Build the Go application
-RUN go build -o schat .
+RUN go build -o main .
 
-# Expose the port on which the app runs
+# Stage 2: Create a lightweight final image
+FROM debian:bullseye-slim
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the compiled binary from the builder stage
+COPY --from=builder /app/main .
+
+# Copy the HTML templates to the container
+COPY ./template ./template
+
+# Set the default port used by the application
 EXPOSE 8000
 
 # Command to run the application
-CMD ["./goso"]
+CMD ["./main"]
