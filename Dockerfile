@@ -1,32 +1,37 @@
-# Stage 1: Build the application
+# Use an official Golang image for building
 FROM golang:1.23.2 AS builder
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy the Go modules manifests and download dependencies
+# Copy Go module manifests and download dependencies
 COPY go.mod go.sum ./
 RUN go mod download
 
-# Copy the entire source code to the container
+# Copy the source code into the container
 COPY . .
 
-# Build the Go application
+# Build the application
 RUN go build -o main .
 
-# Stage 2: Create a lightweight final image
-FROM debian:bullseye-slim
+# Use a minimal image for the runtime
+FROM debian:bookworm-slim
 
-# Set the working directory
+# Set the working directory in the container
 WORKDIR /app
 
-# Copy the compiled binary from the builder stage
+# Install necessary runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy the built application from the builder stage
 COPY --from=builder /app/main .
 
-# Copy the HTML templates to the container
-COPY ./template ./template
+# Copy HTML templates
+COPY ./templates ./templates
 
-# Set the default port used by the application
+# Expose the application's port
 EXPOSE 8000
 
 # Command to run the application

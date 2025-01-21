@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goso
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: goso
+  template:
+    metadata:
+      labels:
+        app: goso
+    spec:
+      containers:
+      - name: goso
+        image: localhost:32000/goso:v2
+        ports:
+        - containerPort: 8000
