@@ -1,3 +1,11 @@
+---
+
+**Demo**: <a href="https://goso.muan.me" target="_blank">https://goso.muan.me</a>
+
+**Deployment Docs**: 
+
+---
+
 # Objective
 A small POC for testing websocket with golang
 
