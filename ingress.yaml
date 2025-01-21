@@ -10,10 +10,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - goso.muan.me
-      secretName: goso-tls
+        - <full sudomain>
+      secretName: <secret-name>
   rules:
-    - host: goso.muan.me
+    - host: <full sudomain>
       http:
         paths:
           - path: /
